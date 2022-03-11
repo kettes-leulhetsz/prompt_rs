@@ -1,5 +1,7 @@
 #![allow(non_upper_case_globals)]
 
+extern crate unicode_segmentation;
+
 use nix::unistd::{geteuid, Uid};
 use std::io::{self, Write};
 use std::path::PathBuf;
@@ -84,7 +86,7 @@ fn cmd_duration(s: String) {
 fn cwd(uid: Uid) {
     use std::env;
     use std::os::unix::ffi::OsStrExt;
-    use std::str::Chars;
+    use unicode_segmentation::{UnicodeSegmentation, Graphemes};
 
     let mut cwd: PathBuf = match env::current_dir() {
         Ok(_cwd) => _cwd, //.to_string_lossy().to_string(),
@@ -112,7 +114,7 @@ fn cwd(uid: Uid) {
     let mut s = dir.split('/');
 
     while let Some(d) = s.next() {
-        if let Some(c) = d.chars().next() {
+        if let Some(c) = d.graphemes(false).next() {
             unsafe {
                 let _ = write!(out, "/{}", c);
             }
@@ -120,7 +122,7 @@ fn cwd(uid: Uid) {
     }
 
     if let Some(i) = dir.rfind('/') {
-        let mut rest: Chars = dir[i..].chars();
+        let mut rest: Graphemes = dir[i..].graphemes(false);
         let _ = rest.next(); // '/'
         let _ = rest.next(); // first char is already written
 
