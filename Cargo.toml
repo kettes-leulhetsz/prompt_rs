@@ -1,0 +1,12 @@
+[package]
+name = "prompt_rs"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+nix = "*"
+autocfg = "*"
+libc = "*"
+cfg-if = "*"
+bitflags = "*"
+memoffset = "*"
